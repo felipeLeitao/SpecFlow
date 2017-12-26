@@ -1,5 +1,8 @@
 ﻿>>>CSharp/StepDefinitionClass
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using OpenQA.Selenium.PhantomJS;
 using System;
+using System.Configuration;
 using TechTalk.SpecFlow;
 
 namespace {namespace}
@@ -7,17 +10,39 @@ namespace {namespace}
     [Binding]
     public class {className}
     {
-{bindings}
+        private PhantomJSDriver _browser;
+        private string _baseUrl;
+
+        [BeforeScenario]
+        public void CreateWebDriver()
+        {
+            //Create the instance of the browser before execute the scenario
+            this._browser = new PhantomJSDriver();
+            this._baseUrl = ConfigurationManager.AppSettings["urlBaseApp"] as string;
+        }
+
+        [AfterScenario]
+        public void CloseWebDriver()
+        {
+			//Close the instance after execute the scenario
+            this._browser.Quit();
+            this._browser.Dispose();
+        }
+
+		{bindings}
     }
 }
+
 >>>CSharp/StepDefinitionRegex
 [{attribute}(@"{regex}")]
+[TestCategory("SpecFlow")]
 public void {methodName}({parameters})
 {
     ScenarioContext.Current.Pending();
 }
 >>>CSharp/StepDefinition
 [{attribute}]
+[TestCategory("SpecFlow")]
 public void {methodName}({parameters})
 {
     ScenarioContext.Current.Pending();
